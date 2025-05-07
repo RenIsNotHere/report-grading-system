@@ -144,8 +144,9 @@
    document.addEventListener("DOMContentLoaded", function() {
      const myModal = new bootstrap.Modal(document.getElementById('reusableModal'));        
      document.getElementById('btnAdd').addEventListener('click', function() {
-        document.getElementById("id").disabled = false;
-          myModal.show();
+         document.getElementById("id").disabled = false;
+         document.getElementById('studentForm').reset();
+         myModal.show();
      });
 
       const editButtons = document.querySelectorAll('.edit-btn');
@@ -153,13 +154,13 @@
            button.addEventListener('click', function() {
                const id = this.getAttribute('data-id');
 
-              document.getElementById("id").disabled = true;
+               document.getElementById("id").disabled = true;
                document.getElementById("id").value = id;
                document.getElementById("first_name").value = document.getElementById("first_name" + id).textContent.trim();
                document.getElementById("middle_name").value = document.getElementById("middle_name" + id).textContent.trim();
                document.getElementById("last_name").value = document.getElementById("last_name" + id).textContent;
-              document.getElementById("date_of_birth").value = document.getElementById("date_of_birth" + id).textContent;
-              document.getElementById("email_address").value = document.getElementById("email_address" + id).textContent;
+               document.getElementById("date_of_birth").value = document.getElementById("date_of_birth" + id).textContent;
+               document.getElementById("email_address").value = document.getElementById("email_address" + id).textContent;
            });
        });
    });
