@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>Report Grading System v1.0 - [{{title}}]</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <meta content="authors" name="Sony, Timothy James B. and Panis, Daniel C.">
+    <meta content="description" name="A website that computes your grade and displays the GWA throughout the quarter.">
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -148,23 +148,127 @@
               {
                  if (document.getElementById('bar-chart'))
                  {
-                  const chartData = {{{grades}}};
-
-                  chartData.datasets.forEach(dataset => {
-                    dataset.backgroundColor = getRandomColor();
-                  });
-
                   const ctx = document.getElementById('bar-chart').getContext('2d');
+                  const chartData = {{{grades}}};
+                
+                  if (Object.keys(chartData).length > 0) {
+                      chartData.datasets.forEach(dataset => {
+                        dataset.backgroundColor = getRandomColor();
+                      });
+      
+                      new Chart(ctx, {
+                      type: 'bar',
+                      data: chartData,
+                      options: {
+                        responsive: true,
+                        plugins: {
+                          title: {
+                            display: true,
+                            text: 'Highest Grades Per Quarter For Each Subject',
+                            font: {
+                              family: 'Montserrat',
+                              size: 22,
+                              weight: 'bold'
+                            }
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: function(context) {
+                                const subject = context.chart.data.labels[context.dataIndex];
+                                const quarter = context.dataset.label;
+                                const value = context.raw;
+                                return `${quarter} | ${subject}: ${value}`;
+                              }
+                            },
+                            titleFont: {
+                                family: 'Montserrat',
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                family: 'Montserrat',
+                                size: 16,
+                                weight: 'normal'
+                            }
+                          },
+                          legend: {
+                            labels: {
+                              font: {
+                                family: 'Montserrat',
+                                size: 14
+                              }
+                            }
+                          }
+                        },
+                        scales: {
+                          x: {
+                            stacked: true,
+                            ticks: {
+                              font: {
+                                family: 'Montserrat',
+                                size: 12
+                              }
+                            }
+                          },
+                          y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                              font: {
+                                family: 'Montserrat',
+                                size: 12
+                              }
+                            }
+                          }
+                        }
+                      }
+                    });
+                  }
+                  else
+                  {
+                     createEmptyChart(ctx, "bar");
+                  }
+                }
+              }
 
-                  new Chart(ctx, {
-                    type: 'bar',
-                    data: chartData,
+              function createGwaPerStudent()
+              {
+                if (document.getElementById('line-chart'))
+                {
+                  const ctx = document.getElementById('line-chart').getContext('2d');
+                  const students = {{{chart}}};
+
+                  if (Object.keys(students).length > 0) {  
+                    const datasets = students.map(student => ({
+                      label: student.studentName.first_name + " " + student.studentName.last_name,
+                      data: [
+                        student.quarter1,
+                        student.quarter2,
+                        student.quarter3,
+                        student.quarter4
+                      ],
+                      fill: false,
+                      borderColor: getRandomColor(),
+                      tension: 0.4,
+                      pointBackgroundColor: 'white',
+                      pointBorderColor: 'black',
+                      pointHoverRadius: 6,
+                      pointRadius: 4,
+                      borderWidth: 2
+                    }));
+    
+                    new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                      labels: ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'],
+                      datasets: datasets
+                    },
                     options: {
                       responsive: true,
                       plugins: {
                         title: {
                           display: true,
-                          text: 'Highest Grades Per Quarter For Each Subject',
+                          text: 'General Weighted Average Per Student',
                           font: {
                             family: 'Montserrat',
                             size: 22,
@@ -172,24 +276,16 @@
                           }
                         },
                         tooltip: {
-                          callbacks: {
-                            label: function(context) {
-                              const subject = context.chart.data.labels[context.dataIndex];
-                              const quarter = context.dataset.label;
-                              const value = context.raw;
-                              return `${quarter} | ${subject}: ${value}`;
-                            }
-                          },
-                          titleFont: {
+                            titleFont: {
                               family: 'Montserrat',
                               size: 18,
                               weight: 'bold'
-                          },
-                          bodyFont: {
+                            },
+                            bodyFont: {
                               family: 'Montserrat',
                               size: 16,
                               weight: 'normal'
-                          }
+                            }
                         },
                         legend: {
                           labels: {
@@ -202,115 +298,30 @@
                       },
                       scales: {
                         x: {
-                          stacked: true,
                           ticks: {
                             font: {
                               family: 'Montserrat',
-                              size: 12
+                              size: 14
                             }
                           }
                         },
                         y: {
-                          stacked: true,
                           beginAtZero: true,
                           ticks: {
                             font: {
                               family: 'Montserrat',
-                              size: 12
+                              size: 14
                             }
                           }
                         }
                       }
                     }
                   });
-                }
-              }
-
-              function createGwaPerStudent()
-              {
-                if (document.getElementById('line-chart'))
-                {
-                  const ctx = document.getElementById('line-chart').getContext('2d');
-                  const students = {{{chart}}};
-  
-                  const datasets = students.map(student => ({
-                    label: student.studentName.first_name + " " + student.studentName.last_name,
-                    data: [
-                      student.quarter1,
-                      student.quarter2,
-                      student.quarter3,
-                      student.quarter4
-                    ],
-                    fill: false,
-                    borderColor: getRandomColor(),
-                    tension: 0.4,
-                    pointBackgroundColor: 'white',
-                    pointBorderColor: 'black',
-                    pointHoverRadius: 6,
-                    pointRadius: 4,
-                    borderWidth: 2
-                  }));
-  
-                  new Chart(ctx, {
-                  type: 'line',
-                  data: {
-                    labels: ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'],
-                    datasets: datasets
-                  },
-                  options: {
-                    responsive: true,
-                    plugins: {
-                      title: {
-                        display: true,
-                        text: 'General Weighted Average Per Student',
-                        font: {
-                          family: 'Montserrat',
-                          size: 22,
-                          weight: 'bold'
-                        }
-                      },
-                      tooltip: {
-                          titleFont: {
-                            family: 'Montserrat',
-                            size: 18,
-                            weight: 'bold'
-                          },
-                          bodyFont: {
-                            family: 'Montserrat',
-                            size: 16,
-                            weight: 'normal'
-                          }
-                      },
-                      legend: {
-                        labels: {
-                          font: {
-                            family: 'Montserrat',
-                            size: 14
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      x: {
-                        ticks: {
-                          font: {
-                            family: 'Montserrat',
-                            size: 14
-                          }
-                        }
-                      },
-                      y: {
-                        beginAtZero: true,
-                        ticks: {
-                          font: {
-                            family: 'Montserrat',
-                            size: 14
-                          }
-                        }
-                      }
-                    }
                   }
-                });
+                  else
+                  {
+                     createEmptyChart(ctx, "line");
+                  }
                 }
               }
 
@@ -318,16 +329,17 @@
               {
                 if (document.getElementById('bar-chart'))
                 {
-                  const subjects = {{{chart}}};
-  
-                  const labels = subjects.map(item => item.label);
-                  const quarter1 = subjects.map(item => item.quarter1);
-                  const quarter2 = subjects.map(item => item.quarter2);
-                  const quarter3 = subjects.map(item => item.quarter3);
-                  const quarter4 = subjects.map(item => item.quarter4);
-  
                   const ctx = document.getElementById('bar-chart').getContext('2d');
-                      new Chart(ctx, {
+                  const subjects = {{{chart}}};
+
+                  if (Object.keys(subjects).length > 0) {  
+                    const labels = subjects.map(item => item.label);
+                    const quarter1 = subjects.map(item => item.quarter1);
+                    const quarter2 = subjects.map(item => item.quarter2);
+                    const quarter3 = subjects.map(item => item.quarter3);
+                    const quarter4 = subjects.map(item => item.quarter4);
+                    
+                    new Chart(ctx, {
                       type: 'bar',
                       data: {
                         labels: labels,
@@ -427,6 +439,11 @@
                           }
                       }
                     });
+                  }
+                  else
+                  {
+                      createEmptyChart(ctx, "bar");
+                  }                    
                 }
               }
 
@@ -434,95 +451,101 @@
               {
                 if (document.getElementById('line-chart'))
                 {
+                  const ctx = document.getElementById('line-chart').getContext('2d'); 
                   const subjects = {{{chart}}};
-                  const ctx = document.getElementById('line-chart').getContext('2d');
-  
-                  const datasets = subjects.map(subject => ({
-                    label: subject.label,
-                    data: [
-                      subject.quarter1,
-                      subject.quarter2,
-                      subject.quarter3,
-                      subject.quarter4
-                    ],
-                    fill: false,
-                    borderColor: getRandomColor(),
-                    tension: 0.4,
-                    pointBackgroundColor: 'white',
-                    pointBorderColor: 'black',
-                    pointHoverRadius: 6,
-                    pointRadius: 4,
-                    borderWidth: 2
-                  }));
-  
-                  new Chart(ctx, {
-                  type: 'line',
-                  data: {
-                    labels: ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'],
-                    datasets: datasets
-                  },
-                  options: {
-                    responsive: true,
-                    plugins: {
-                      title: {
-                        display: true,
-                        text: 'Grades Per Subject',
-                        font: {
-                          family: 'Montserrat',
-                          size: 18,
-                          weight: 'bold'
-                        }
-                      },
-                        tooltip: {
-                            callbacks: {
-                              label: function(context) {
-                                return context.dataset.label + ': ' + context.formattedValue;
+                  
+                  if (Object.keys(subjects).length > 0) {                     
+                    const datasets = subjects.map(subject => ({
+                      label: subject.label,
+                      data: [
+                        subject.quarter1,
+                        subject.quarter2,
+                        subject.quarter3,
+                        subject.quarter4
+                      ],
+                      fill: false,
+                      borderColor: getRandomColor(),
+                      tension: 0.4,
+                      pointBackgroundColor: 'white',
+                      pointBorderColor: 'black',
+                      pointHoverRadius: 6,
+                      pointRadius: 4,
+                      borderWidth: 2
+                    }));
+    
+                    new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                      labels: ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'],
+                      datasets: datasets
+                    },
+                    options: {
+                      responsive: true,
+                      plugins: {
+                        title: {
+                          display: true,
+                          text: 'Grades Per Subject',
+                          font: {
+                            family: 'Montserrat',
+                            size: 18,
+                            weight: 'bold'
+                          }
+                        },
+                          tooltip: {
+                              callbacks: {
+                                label: function(context) {
+                                  return context.dataset.label + ': ' + context.formattedValue;
+                                }
+                              },
+                              titleFont: {
+                                family: 'Montserrat',
+                                size: 18,
+                                weight: 'bold'
+                              },
+                              bodyFont: {
+                                family: 'Montserrat',
+                                size: 16,
+                                weight: 'bold'
                               }
                             },
-                            titleFont: {
+                        legend: {
+                          labels: {
+                            font: {
                               family: 'Montserrat',
-                              size: 18,
-                              weight: 'bold'
-                            },
-                            bodyFont: {
-                              family: 'Montserrat',
-                              size: 16,
+                              size: 14,
                               weight: 'bold'
                             }
-                          },
-                      legend: {
-                        labels: {
-                          font: {
-                            family: 'Montserrat',
-                            size: 14,
-                            weight: 'bold'
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      x: {
-                        ticks: {
-                          font: {
-                            family: 'Montserrat',
-                            size: 14,
-                            weight: 'bold'
                           }
                         }
                       },
-                      y: {
-                        beginAtZero: true,
-                        ticks: {
-                          font: {
-                            family: 'Montserrat',
-                            size: 14,
-                            weight: 'bold'
+                      scales: {
+                        x: {
+                          ticks: {
+                            font: {
+                              family: 'Montserrat',
+                              size: 14,
+                              weight: 'bold'
+                            }
+                          }
+                        },
+                        y: {
+                          beginAtZero: true,
+                          ticks: {
+                            font: {
+                              family: 'Montserrat',
+                              size: 14,
+                              weight: 'bold'
+                            }
                           }
                         }
                       }
                     }
+                  });
                   }
-                });
+                  else
+                  {
+                     createEmptyChart(ctx, "line");
+                  }                  
                 }
               }
 
@@ -546,6 +569,43 @@
                 const g = Math.floor(Math.random() * 255);
                 const b = Math.floor(Math.random() * 255);
                 return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+              }
+
+              function createEmptyChart(ctx, type)
+              {
+                  return new Chart(ctx, {
+                      type: type,
+                      data: {},
+                      options: {
+                          plugins: {
+                              noData: {
+                                  display: true,
+                                  text: 'No Data Available'
+                              }
+                          }
+                      },
+                      plugins: [{
+                          id: 'noData',
+                          afterDraw(chart) {
+                              const data = chart.data;
+                              const hasData = data.datasets.some(dataset => 
+                                  dataset.data.some(value => value !== null && value !== 0)
+                              );
+
+                              if (!hasData) {
+                                  const ctx = chart.ctx;
+                                  const {width, height} = chart;
+                                  ctx.save();
+                                  ctx.textAlign = 'center';
+                                  ctx.textBaseline = 'middle';
+                                  ctx.font = '20px Montserrat';
+                                  ctx.fillStyle = 'white'
+                                  ctx.fillText('No Data Available', width / 2, height / 2);
+                                  ctx.restore();
+                              }
+                          }
+                      }]
+                  });
               }
 
               createCharts();

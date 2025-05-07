@@ -301,21 +301,12 @@
           document.getElementById('gwa_quarter3').innerText = (quartersTotal.quarter3 / creditUnit).toFixed(2);
           document.getElementById('gwa_quarter4').innerText = (quartersTotal.quarter4 / creditUnit).toFixed(2);
           document.getElementById('final_grade').innerText = (quartersTotal.quarter4 / creditUnit).toFixed(2);
-        }
-      }
 
-      function calculateTotalSubjects() {
-        let total = document.querySelectorAll('#subjects tr').length;
-        let excluded = document.querySelectorAll('#subjects select[name="quarter1"]').length;
-         
-        if (document.getElementById('total_units')) 
-        {
-           document.getElementById('total_units').innerText = (total - excluded);
+           document.getElementById('total_units').innerText = creditUnit;
         }
       }
 
       calculateGWA();
-      calculateTotalSubjects();
 
       document.querySelectorAll('.quarter').forEach(input => {
         input.addEventListener('input', calculateGWA);

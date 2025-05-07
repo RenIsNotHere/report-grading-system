@@ -74,6 +74,7 @@ if (!fs.existsSync(subjectsFilePath)) {
     fs.writeFileSync(subjectsFilePath, "{}");
 }
 
+// Setup Handlebars helpers
 const hbs = handlebars.create();
 hbs.handlebars.registerHelper("formatDate", function (dateString) {
     if (dateString != null) {
@@ -89,6 +90,7 @@ hbs.handlebars.registerHelper("ifEquals", function (arg1, arg2, options) {
     return arg1 == arg2 ? options.fn(this) : options.inverse(this);
 });
 
+// Setup view engine
 app.engine(
     "hbs",
     handlebars.engine({
@@ -105,8 +107,7 @@ app.use("/data", express.static(path.join(__dirname, "data")));
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views")); // Updated path for views
 
-// Routes
-// to get index.hbs as the first page to display
+// Route: Render login page
 app.get("/", (req, res) => {
     try {
         res.render("login.hbs", {
@@ -119,6 +120,7 @@ app.get("/", (req, res) => {
     }
 });
 
+// Route: Render dashboard page
 app.get("/dashboard", ensureAuthenticated, (req, res) => {
     try {
         let username = req.session.username;
@@ -130,10 +132,10 @@ app.get("/dashboard", ensureAuthenticated, (req, res) => {
 
         if (user.is_student) {
             let id = findKeyByEmail(username, students);
-            chart = createSubjectPerQuarterChart(id);
+            chart = createSubjectPerQuarterChart(id) || {};
         } else {
             chart = createGradesPerStudent() ?? {};
-            grades = createHighestGradePerSubject() ?? null;
+            grades = createHighestGradePerSubject() ?? {};
         }
 
         res.render("dashboard.hbs", {
@@ -149,6 +151,7 @@ app.get("/dashboard", ensureAuthenticated, (req, res) => {
     }
 });
 
+// Route: Render students page
 app.get("/students", ensureAuthenticated, (req, res) => {
     try {
         let username = req.session.username;
@@ -173,6 +176,7 @@ app.get("/students", ensureAuthenticated, (req, res) => {
     }
 });
 
+// Route: Save or update student information
 app.post("/save-student", upload.single("profile_image"), async (req, res) => {
     try {
         let isFound = false;
@@ -227,6 +231,7 @@ app.post("/save-student", upload.single("profile_image"), async (req, res) => {
     }
 });
 
+// Route: Delete student record
 app.get("/delete-student", (req, res) => {
     try {
         let id = req.query;
@@ -259,6 +264,7 @@ app.get("/delete-student", (req, res) => {
     }
 });
 
+// Route: Render subjects page
 app.get("/subjects", ensureAuthenticated, (req, res) => {
     try {
         let username = req.session.username;
@@ -280,6 +286,7 @@ app.get("/subjects", ensureAuthenticated, (req, res) => {
     }
 });
 
+// Route: Save or update subject information
 app.post("/save-subject", (req, res) => {
     try {
         let isFound = false;
@@ -323,6 +330,7 @@ app.post("/save-subject", (req, res) => {
     }
 });
 
+// Route: Delete subject record
 app.get("/delete-subject", (req, res) => {
     try {
         const subjects = JSON.parse(fs.readFileSync(subjectsFilePath));
@@ -343,6 +351,7 @@ app.get("/delete-subject", (req, res) => {
     }
 });
 
+// Route: Render periodic ratings page
 app.get("/periodic-ratings", ensureAuthenticated, (req, res) => {
     try {
         let id = req.query.id;
@@ -393,6 +402,7 @@ app.get("/periodic-ratings", ensureAuthenticated, (req, res) => {
     }
 });
 
+// Route: Save periodic ratings
 app.post("/save-periodic-ratings", (req, res) => {
     try {
         let periodicRatings = {};
@@ -430,6 +440,7 @@ app.post("/save-periodic-ratings", (req, res) => {
     }
 });
 
+// Route: Handle login authentication
 app.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -453,6 +464,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// Route: Logout and destroy session
 app.get("/logout", (req, res) => {
     try {
         req.session.destroy();
@@ -463,6 +475,7 @@ app.get("/logout", (req, res) => {
     }
 });
 
+// Helper: Sort JSON by key
 function sort(filePath, key, order = "asc") {
     try {
         const rawData = fs.readFileSync(filePath, "utf-8");
@@ -492,6 +505,7 @@ function sort(filePath, key, order = "asc") {
     }
 }
 
+// Helper: Search key inside JSON
 function search(data, key) {
     try {
         if (data.hasOwnProperty(key)) {
@@ -504,6 +518,7 @@ function search(data, key) {
     }
 }
 
+// Helper: Enrich periodic ratings with subject data
 function enrichPeriodicRatings(studentId, subjectsData, ratingsData) {
     try {
         ratingsData[studentId].forEach((record) => {
@@ -545,6 +560,7 @@ function enrichPeriodicRatings(studentId, subjectsData, ratingsData) {
     }
 }
 
+// Helper: Add student if not exists in ratings
 function addStudentIfNotExists(studentId, subjectsData, ratingsData) {
     try {
         const subjectsList = Object.keys(subjectsData).map((subjectId) => ({
@@ -577,6 +593,7 @@ function addStudentIfNotExists(studentId, subjectsData, ratingsData) {
     }
 }
 
+// Helper: Sort JSON object by its keys
 function sortByKeys(obj) {
     try {
         const sortedKeys = Object.keys(obj).sort();
@@ -592,6 +609,7 @@ function sortByKeys(obj) {
     }
 }
 
+// Middleware: Check if user is authenticated
 function ensureAuthenticated(req, res, next) {
     if (req.session.isAuthenticated) {
         return next();
@@ -599,6 +617,7 @@ function ensureAuthenticated(req, res, next) {
     res.redirect("/");
 }
 
+// Helper: Find user object by email
 function findUserByEmail(email, users) {
     try {
         for (const key in users) {
@@ -612,6 +631,7 @@ function findUserByEmail(email, users) {
     }
 }
 
+// Helper: Find user key by email
 function findKeyByEmail(email, users) {
     try {
         for (const key in users) {
@@ -625,6 +645,7 @@ function findKeyByEmail(email, users) {
     }
 }
 
+// Chart Helper: Create subject per quarter chart data
 function createSubjectPerQuarterChart(studentId) {
     try {
         const data = JSON.parse(fs.readFileSync(subjectsFilePath));
@@ -660,6 +681,7 @@ function createSubjectPerQuarterChart(studentId) {
     }
 }
 
+// Chart Helper: Create grades per student chart data
 function createGradesPerStudent() {
     try {
         const periodicRatings = JSON.parse(
@@ -684,6 +706,7 @@ function createGradesPerStudent() {
     }
 }
 
+// Chart Helper: Create highest grade per subject chart data
 function createHighestGradePerSubject() {
     try {
         const subjects = JSON.parse(fs.readFileSync(subjectsFilePath));
@@ -769,7 +792,7 @@ function createHighestGradePerSubject() {
     }
 }
 
-// enable web service
+// Start server
 const PORT = 3000;
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
