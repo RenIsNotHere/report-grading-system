@@ -1,0 +1,113 @@
+{
+  "01-2022-243": [
+    {
+      "subjects": [
+        {
+          "id": "1746204271898",
+          "quarters": {
+            "quarter1": "1",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746204315143",
+          "quarters": {
+            "quarter1": "1.25",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746203944775",
+          "quarters": {
+            "quarter1": "1.50",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205642209",
+          "quarters": {
+            "quarter1": "2",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205684328",
+          "quarters": {
+            "quarter1": "2.25",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205282318",
+          "quarters": {
+            "quarter1": "2.5",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205752691",
+          "quarters": {
+            "quarter1": "2.75",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205237791",
+          "quarters": {
+            "quarter1": "3",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205720043",
+          "quarters": {
+            "quarter1": "4",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205803255",
+          "quarters": {
+            "quarter1": "1",
+            "quarter2": "0",
+            "quarter3": "0",
+            "quarter4": "0"
+          }
+        },
+        {
+          "id": "1746205842172",
+          "quarters": {
+            "quarter1": "Complete",
+            "quarter2": "",
+            "quarter3": "",
+            "quarter4": ""
+          }
+        }
+      ],
+      "general_weighted_average": {
+        "quarter1": "2.13",
+        "quarter2": "0.00",
+        "quarter3": "0.00",
+        "quarter4": "0.00"
+      }
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+<div class="container-fluid pt-4 px-4">
+   <div class="bg-secondary text-center rounded p-4">
+      <div class="d-flex align-items-center justify-content-between mb-4">
+         <h5 class="mb-0">Subjects</h5>
+      </div>
+      <div class="table-responsive">
+         <table class="table text-start align-middle table-hover mb-0">
+            <thead>
+               <tr class="text-white">
+                  <th scope="col">Name</th>
+                  <th scope="col">Descriptive Title</th>
+                  <th scope="col">Credit Unit</th>
+                  <th scope="col">Created Date</th>
+                  <th scope="col">Modified Date</th>
+                  <th scope="col">&nbsp;</th>
+               </tr>
+            </thead>
+            <tbody>
+               {{#each subjects}}
+               <tr>
+                  <td> 
+                     <label id="name{{@key}}">{{this.name}}</label>
+                  </td>
+                  <td>
+                     <label id="descriptive_title{{@key}}">{{this.descriptive_title}}</label>
+                  </td>
+                  <td>
+                     <label id="credit_unit{{@key}}">{{this.credit_unit}}</label>
+                  </td>
+                  <td>
+                     <label id="created_date{{@key}}">{{formatDate this.created_date}}</label>
+                  </td>
+                  <td>
+                     <label id="modified_date{{@key}}">{{formatDate this.modified_date}}</label>
+                     <input type="hidden" id="is_included{{@key}}" name="is_included{{@key}}" placeholder="jhondoe" value="{{this.is_included}}"/>
+                  </td>
+                  <td align="right">
+                     <div class="button-container">
+                        <button class="btn btn-sm btn-primary edit-btn" data-id="{{@key}}" data-name="{{@key}}" data-bs-toggle="modal" data-bs-target="#reusableModal">
+                           <i class="far fa-edit"></i> Edit
+                        </button>&nbsp;
+                        <form id="forms{{@key}}" action="/delete-subject" method = "get" onsubmit="return confirm('Do you want to delete this record?')">
+                           <input name="{{@key}}" id="{{@key}}" type="hidden" value="{{@key}}"/>
+                           <button class="btn btn-sm btn-primary delete-btn" data-id="{{@key}}" data-name="{{@key}}">
+                              <i class="fas fa-trash"></i> Delete
+                           </button>
+                        </form>
+                     </div>
+                  </td>
+               </tr>
+               {{/each}}
+            </tbody>
+            <tfoot>
+               <tr>
+                  <td align="right" colspan="6">
+                     <a class="btn btn-sm btn-primary" id="btnAdd" href="javascript:void(0);">
+                        <i class="fas fa-plus me-2"></i> Add
+                     </a>
+                  </td>
+               </tr>
+            </tfoot>
+         </table>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="reusableModal" tabindex="-1" aria-labelledby="reusableModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content" id="modalContent">
+         <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <form id="subjectForm" action="/save-subject" method="post" onsubmit="return Do you want to save this record?">
+            <div class="modal-body">
+               <!-- Subject Data Entry Start -->            
+               <div class="row h-100 align-items-center justify-content-center">
+                  <div class="bg-secondary rounded mx-3">
+                     <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h3>Subject</h3>
+                     </div>
+                     <div class="form-floating mb-3">
+                        <input type="hidden" id="id" name="id" placeholder="jhondoe"/>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="jhondoe" required />
+                        <label for="floatingText">Name</label>
+                     </div>
+                     <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="descriptive_title" name="descriptive_title" placeholder="jhondoe" required />
+                        <label for="floatingText">Descriptive Title</label>
+                     </div>
+                     <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="credit_unit" name="credit_unit" placeholder="jhondoe" min="0.0000001" step="any" required />
+                        <label for="floatingText">Credit Unit</label>
+                     </div>
+                     <div class="d-flex justify-content-center mt-4">
+                        <div class="form-check form-check-inline">
+                           <label for="floatingText" class="text-nowrap">Include to computation?</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                           <input class="form-check-input" type="radio" name="is_included" id="statusComplete" value="yes">
+                           <label class="form-check-label" for="is_included">Yes</label>
+                          </div>
+                        <div class="form-check form-check-inline">
+                           <input class="form-check-input" type="radio" name="is_included" id="statusIncomplete" value="no">
+                           <label class="form-check-label" for="is_included">No</label>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Subject Data Entry End -->
+            </div>
+            <div class="modal-footer">
+               <button type="submit" class="btn btn-primary" id="saveBtn" onclick="return confirm('Do you want to save this record?')">
+                  <i class="fas fa-save"></i> Save
+               </button>
+               <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
+                  <i class="fas fa-times me-2"></i> Cancel
+               </button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+<script >
+   document.addEventListener("DOMContentLoaded", function() {
+       const myModal = new bootstrap.Modal(document.getElementById('reusableModal'));
+
+       document.getElementById('btnAdd').addEventListener('click', function() {
+           document.getElementById('id').value = new Date().valueOf();
+           myModal.show();
+       });
+
+       const editButtons = document.querySelectorAll('.edit-btn');
+       editButtons.forEach(button => {
+           button.addEventListener('click', function() {
+               const id = this.getAttribute('data-id');
+
+               document.getElementById("id").value = id;
+               document.getElementById("name").value = document.getElementById("name" + id).textContent.trim();
+               document.getElementById("descriptive_title").value = document.getElementById("descriptive_title" + id).textContent.trim();
+               document.getElementById("credit_unit").value = document.getElementById("credit_unit" + id).textContent;
+               setRadioValue("is_included",  document.getElementById("is_included" + id).value)
+           });
+       });
+
+      function setRadioValue(name, value) {
+        const radios = document.getElementsByName(name);
+        radios.forEach(radio => {
+          if (radio.value === value) {
+            radio.checked = true;
+          }
+        });
+      }
+   });
+</script>
+<style>
+   .modal-dialog
+   {
+      margin: 15rem auto !important;
+   }
+
+   .form-check-input {
+     transform: scale(1.3);
+   }
+</style>

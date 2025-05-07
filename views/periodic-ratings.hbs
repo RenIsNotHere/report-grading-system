@@ -1,0 +1,329 @@
+<div class="container-fluid pt-4 px-4">
+   <div class="bg-secondary text-center rounded p-4">
+      <div class="d-flex align-items-center justify-content-between">
+         <h5 class="mb-0">Periodic Ratings</h5>
+      </div>
+      {{#unless user.is_student}}
+      <form id="formStudent" method="POST" onsubmit="return false;">
+         <div class="d-flex align-items-center mb">
+               <input type="hidden" id="id" name="id" value="{{id}}"> 
+               <label class="text-white" for="cboStudent">Student:&nbsp;</label>
+               <select class="form-select" id="cboStudent" required>
+                 <option value=""></option>
+                 {{#each students}}
+                  <option value="{{@key}}">
+                     {{this.first_name}} {{this.last_name}}
+                  </option>
+                 {{/each}}
+               </select>&nbsp;
+               <button type="submit" class="btn btn-primary" id="btnSave">
+                   <i class="fas fa-save"></i> Save
+               </button>&nbsp;
+               <button type="button" class="btn btn-warning" id="btnClear">
+                  <i class="fas fa-redo-alt"></i> Clear
+               </button>                
+         </div>
+      </form>
+      {{/unless}} 
+      <div class="table-responsive">
+         <form id="formRatings" method="POST" action="/save-periodic-ratings">
+            <table class="table text-center align-middle table-hover mb-0">
+               <thead>
+                  <tr class="text-white" align="center">
+                     <th scope="col" colspan="3">&nbsp;</th>
+                     <th scope="col" colspan="5" align="center">Grading Period</th>
+                  </tr>
+                  <tr class="text-white" align="center">
+                     <th scope="col">Course</th>
+                     <th scope="col">Descriptive Title</th>
+                     <th scope="col" class="text-nowrap">Credit Unit</th>
+                     <th scope="col">1</th>
+                     <th scope="col">2</th>
+                     <th scope="col">3</th>
+                     <th scope="col">4</th>
+                     <th scope="col" class="text-nowrap">Final Grade</th>
+                  </tr>
+               </thead>
+                  {{#each ratings}}
+                     <tbody id="subjects">
+                        {{#each subjects}}
+                           <tr class="subject-row" data-id="{{id}}">
+                              <td>
+                                 <input type="hidden" id="subjectId" value="{{id}}">
+                                 <label id="name">{{this.name}}</label>
+                              </td>
+                              <td><label id="descriptive_title" name="descriptive_title">{{descriptive_title}}</label></td>
+                              <td>
+                                 {{#ifEquals is_included "yes"}}
+                                    <label id="credit_unit" name="credit_unit">{{credit_unit}}</label>
+                                 {{else}}
+                                    <label id="credit_unit" name="credit_unit">({{credit_unit}})</label>
+                                 {{/ifEquals}}
+                              </td>
+                              <td>
+                                 {{#if ../../user.is_student}}
+                                   <span id="quarter1" name="quarter1">{{quarters.quarter1}}</span>
+                                 {{else}}
+                                    {{#ifEquals is_included "yes"}}
+                                       <input type="number" class="form-control text-end quarter" id="quarter1" name="quarter1" value="{{quarters.quarter1}}">
+                                    {{else}}
+                                       <select name="quarter1" class="form-select">
+                                         <option value=""></option>
+                                         <option value="Incomplete" {{#ifEquals quarters.quarter1 'Incomplete'}}selected{{/ifEquals}}>Incomplete</option>
+                                         <option value="Complete" {{#ifEquals quarters.quarter1 'Complete'}}selected{{/ifEquals}}>Complete</option>
+                                       </select>
+                                    {{/ifEquals}}
+                                 {{/if}}
+                              </td>
+                              <td>
+                                  {{#if ../../user.is_student}}
+                                   <span id="quarter2" name="quarter2">{{quarters.quarter2}}</span>
+                                 {{else}}
+                                    {{#ifEquals is_included "yes"}}
+                                       <input type="number" class="form-control text-end quarter" id="quarter2" name="quarter2" value="{{quarters.quarter2}}">
+                                    {{else}}
+                                       <select name="quarter2" class="form-select">
+                                         <option value=""></option>
+                                         <option value="Incomplete" {{#ifEquals quarters.quarter2 'Incomplete'}}selected{{/ifEquals}}>Incomplete</option>
+                                         <option value="Complete" {{#ifEquals quarters.quarter2 'Complete'}}selected{{/ifEquals}}>Complete</option>
+                                       </select>
+                                    {{/ifEquals}}
+                                 {{/if}}
+                              </td>
+                              <td>
+                                  {{#if ../../user.is_student}}
+                                   <span id="quarter3" name="quarter3">{{quarters.quarter3}}</span>
+                                 {{else}}
+                                    {{#ifEquals is_included "yes"}}
+                                       <input type="number" class="form-control text-end quarter" id="quarter3" name="quarter3" value="{{quarters.quarter3}}">
+                                    {{else}}
+                                       <select name="quarter3" class="form-select">
+                                         <option value=""></option>
+                                         <option value="Incomplete" {{#ifEquals quarters.quarter3 'Incomplete'}}selected{{/ifEquals}}>Incomplete</option>
+                                         <option value="Complete" {{#ifEquals quarters.quarter3 'Complete'}}selected{{/ifEquals}}>Complete</option>
+                                       </select>
+                                    {{/ifEquals}}
+                                 {{/if}}
+                              </td>
+                              <td>
+                                  {{#if ../../user.is_student}}
+                                   <span id="quarter4" name="quarter4">{{quarters.quarter4}}</span>
+                                 {{else}}
+                                    {{#ifEquals is_included "yes"}}
+                                       <input type="number" class="form-control text-end quarter" id="quarter4" name="quarter4" value="{{quarters.quarter4}}">
+                                    {{else}}
+                                       <select name="quarter4" class="form-select">
+                                         <option value=""></option>
+                                         <option value="Incomplete" {{#ifEquals quarters.quarter4 'Incomplete'}}selected{{/ifEquals}}>Incomplete</option>
+                                         <option value="Complete" {{#ifEquals quarters.quarter4 'Complete'}}selected{{/ifEquals}}>Complete</option>
+                                       </select>
+                                    {{/ifEquals}}
+                                 {{/if}}
+                              </td>
+                              <td align="right">
+                                 {{#ifEquals is_included "yes"}}
+                                    {{quarters.quarter4}}
+                                 {{/ifEquals}}
+                              </td>
+                           </tr>
+                        {{/each}} 
+                     </tbody>
+                  <tfoot>
+                     <tr class="text-white" align="center">
+                        <td class="text-nowrap">
+                           General Weighted Average
+                        </td>
+                        <td align="right">
+                           Total
+                        </td>
+                        <td>
+                           <label id="total_units" name="total_units">0</label>
+                        </td>
+                        <td align="right"><label id="gwa_quarter1" name="gwa_quarter1">{{general_weighted_average.quarter1}}</label></td>
+                        <td align="right"><label id="gwa_quarter2" name="gwa_quarter2">{{general_weighted_average.quarter2}}</label></td>
+                        <td align="right"><label id="gwa_quarter3" name="gwa_quarter3">{{general_weighted_average.quarter3}}</label></td>
+                        <td align="right"><label id="gwa_quarter4" name="gwa_quarter4">{{general_weighted_average.quarter4}}</label></td>
+                        <td align="right"><label id="final_grade" name="final_grade">{{general_weighted_average.quarter4}}</label></td>
+                     </tr>
+                  </tfoot>
+               {{/each}}            
+            </table>
+         </form>
+      </div>
+   </div>
+</div>
+<script>   
+   document.addEventListener("DOMContentLoaded", function() {
+       if (document.getElementById('cboStudent')) {
+          document.getElementById('cboStudent').value= "{{id}}";
+
+          document.getElementById('cboStudent').addEventListener('change', function(e) {
+             const selectedValue = this.value;
+             if (selectedValue.length == 0)
+             {
+                window.location.href = '/periodic-ratings';
+             }
+             else
+             {
+                window.location.href = '/periodic-ratings?id=' + selectedValue;
+             }         
+           });
+       }
+
+      if (document.getElementById('btnSave'))
+      {
+       document.getElementById('btnSave').addEventListener('click', function() {
+          if (document.getElementById('cboStudent').value.length > 0)
+          {
+             if (confirm('Do you want to save this record?'))
+             {
+                savePeriodicRatings();
+             }
+          }
+       });
+      }
+
+      if (document.getElementById('btnClear'))
+      {
+         document.getElementById('btnClear').addEventListener('click', function() {
+          window.location.href = '/periodic-ratings';
+       });
+      }
+
+       function savePeriodicRatings() {
+           const subjects = [];
+           const rows = document.querySelectorAll('.subject-row');
+           const studentId = document.getElementById('cboStudent').value;
+
+           rows.forEach(row => {
+               const inputs = row.querySelectorAll('input, select');
+               subjects.push({
+                   id: inputs[0].value,
+                   quarters: {
+                       quarter1: (typeof inputs[1].value === 'string' ? inputs[1].value : parseFloat(inputs[1].value).toFixed(2)),
+                       quarter2: (typeof inputs[2].value === 'string' ? inputs[2].value : parseFloat(inputs[2].value).toFixed(2)),
+                       quarter3: (typeof inputs[3].value === 'string' ? inputs[3].value : parseFloat(inputs[3].value).toFixed(2)),
+                       quarter4: (typeof inputs[4].value === 'string' ? inputs[4].value : parseFloat(inputs[4].value).toFixed(2))
+                   }
+               });
+           });
+
+           // Get GWA values
+           const general_weighted_average = {
+               quarter1: parseFloat(document.getElementById('gwa_quarter1').innerText).toFixed(2),
+               quarter2: parseFloat(document.getElementById('gwa_quarter2').innerText).toFixed(2),
+               quarter3: parseFloat(document.getElementById('gwa_quarter3').innerText).toFixed(2),
+               quarter4: parseFloat(document.getElementById('gwa_quarter4').innerText).toFixed(2)
+           };
+
+           const finalData = {
+               [studentId]: [{
+                   subjects: subjects,
+                   general_weighted_average: general_weighted_average
+               }]
+           };
+          
+           fetch('/save-periodic-ratings', {
+                   method: 'POST',
+                   headers: {
+                       'Content-Type': 'application/json'
+                   },
+                   body: JSON.stringify(finalData)
+               })
+               .then(response => response.json())
+               .then(result => {
+                   alert(result.message);
+               })
+               .catch(error => {
+                   console.error('Error saving data:', error);
+               });
+       }
+
+      function calculateGWA() {
+        let quartersTotal = { quarter1: 0, quarter2: 0, quarter3: 0, quarter4: 0 };
+        let subjectCount = 0;
+        let creditUnit = 0;
+
+        document.querySelectorAll('#subjects tr').forEach(tr => {
+            let q1 = "";
+            if (tr.querySelector('select[name="quarter1"]') != null)
+            {               
+               q1 = tr.querySelector('select[name="quarter1"]').value;
+            }
+            else
+            {
+               q1 = parseFloat(tr.querySelector('input[name="quarter1"]') ? tr.querySelector('input[name="quarter1"]').value: tr.querySelector('span[name="quarter1"]').innerText) || 0;
+            }
+
+           let q2 = "";
+           if (tr.querySelector('select[name="quarter2"]') != null)
+           {               
+              q2 = tr.querySelector('select[name="quarter2"]').value;
+           }
+           else
+           {
+              q2 = parseFloat(tr.querySelector('input[name="quarter2"]') ? tr.querySelector('input[name="quarter2"]').value: tr.querySelector('span[name="quarter2"]').innerText) || 0;
+           }
+
+           let q3 = "";
+           if (tr.querySelector('select[name="quarter3"]') != null)
+           {               
+              q3 = tr.querySelector('select[name="quarter3"]').value;
+           }
+           else
+           {
+              q3 = parseFloat(tr.querySelector('input[name="quarter3"]') ? tr.querySelector('input[name="quarter3"]').value: tr.querySelector('span[name="quarter3"]').innerText) || 0;
+           }
+
+           let q4 = "";
+           if (tr.querySelector('select[name="quarter4"]') != null)
+           {               
+              q4 = tr.querySelector('select[name="quarter4"]').value;
+           }
+           else
+           {
+              q4 = parseFloat(tr.querySelector('input[name="quarter4"]') ? tr.querySelector('input[name="quarter4"]').value: tr.querySelector('span[name="quarter4"]').innerText) || 0;
+           }
+
+           quartersTotal.quarter1 += (typeof q1 === 'string' ? 0: q1);
+           quartersTotal.quarter2 += (typeof q2 === 'string' ? 0: q2);
+           quartersTotal.quarter3 += (typeof q3 === 'string' ? 0: q3);
+           quartersTotal.quarter4 += (typeof q4 === 'string' ? 0: q4);
+
+           creditUnit += (tr.querySelector('label[name="credit_unit"]').innerText.indexOf("(") == -1 ? (parseFloat(tr.querySelector('label[name="credit_unit"]').innerText) || 0): 0);
+
+           subjectCount++;
+        });
+
+        if (subjectCount > 0) {
+          document.getElementById('gwa_quarter1').innerText = (quartersTotal.quarter1 / creditUnit).toFixed(2);
+          document.getElementById('gwa_quarter2').innerText = (quartersTotal.quarter2 / creditUnit).toFixed(2);
+          document.getElementById('gwa_quarter3').innerText = (quartersTotal.quarter3 / creditUnit).toFixed(2);
+          document.getElementById('gwa_quarter4').innerText = (quartersTotal.quarter4 / creditUnit).toFixed(2);
+          document.getElementById('final_grade').innerText = (quartersTotal.quarter4 / creditUnit).toFixed(2);
+        }
+      }
+
+      function calculateTotalSubjects() {
+        let total = document.querySelectorAll('#subjects tr').length;
+        let excluded = document.querySelectorAll('#subjects select[name="quarter1"]').length;
+         
+        if (document.getElementById('total_units')) 
+        {
+           document.getElementById('total_units').innerText = (total - excluded);
+        }
+      }
+
+      calculateGWA();
+      calculateTotalSubjects();
+
+      document.querySelectorAll('.quarter').forEach(input => {
+        input.addEventListener('input', calculateGWA);
+      });
+   });
+</script>
+<style>
+   .mb {
+       margin-left: 26% !important;
+   }
+</style>
