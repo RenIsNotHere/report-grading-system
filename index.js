@@ -526,15 +526,18 @@ function enrichPeriodicRatings(studentId, subjectsData, ratingsData) {
                 (subject) => subject.id,
             );
 
-            record.subjects.forEach((subject) => {
+            record.subjects = record.subjects.filter((subject) => {
                 const subjectInfo = subjectsData[subject.id];
                 if (subjectInfo) {
                     subject.name = subjectInfo.name;
                     subject.descriptive_title = subjectInfo.descriptive_title;
                     subject.credit_unit = subjectInfo.credit_unit;
                     subject.is_included = subjectInfo.is_included;
+                    return true;
                 }
+                return false;
             });
+
 
             for (const subjectId in subjectsData) {
                 if (!existingSubjectIds.includes(subjectId)) {
